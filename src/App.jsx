@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import "./App.css";
 import { useDispatch } from "react-redux";
-import authService from "./appwrite/auth";
-import { login, logout } from "./store/authSlice";
-import "../src/index.css";
-import { Footer, Header } from "./components/index";
+import authService from "./appwrite/auth.js";
+import { login, logout } from "./store/authSlice.js";
+import Header from "./components/Header/Header.jsx";
+import Footer from "./components/Footer/Footer.jsx";
 import { Outlet } from "react-router-dom";
+function App() {
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
-const App = () => {
   useEffect(() => {
     authService
       .getCurrentUser()
@@ -17,26 +20,19 @@ const App = () => {
           dispatch(logout());
         }
       })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
   }, []);
-  const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
   return !loading ? (
     <div className="min-h-screen flex flex-wrap content-between bg-gray-400">
       <div className="w-full block">
         <Header />
-        <main>{<Outlet />}</main>
+        <main>
+          <Outlet />
+        </main>
         <Footer />
       </div>
     </div>
-  ) : (
-    <span class="loader"></span>
-  );
-};
+  ) : null;
+}
 
 export default App;

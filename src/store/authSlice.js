@@ -4,7 +4,6 @@ const initialState = {
   status: false,
   userData: null,
 };
-
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -19,6 +18,10 @@ const authSlice = createSlice({
     },
   },
 });
+
+const postInitaialState = {
+  post: null,
+};
 
 export const { login, logout } = authSlice.actions;
 

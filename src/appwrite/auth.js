@@ -1,13 +1,10 @@
+import conf from "../config/config";
 import { Client, Account, ID } from "appwrite";
-import conf from "../conf/conf";
 
-export class AuthService {
-  client = new Client();
-  account;
-
+class AuthService {
   constructor() {
-    this.client
-      .setEndpoint(conf.appwriteUrl)
+    this.client = new Client()
+      .setEndpoint(conf.apperiteUrl)
       .setProject(conf.appwriteProjectId);
     this.account = new Account(this.client);
   }
@@ -15,47 +12,60 @@ export class AuthService {
   async createAccount({ email, password, name }) {
     try {
       const userAccount = await this.account.create(
-        ID.unique,
+        ID.unique(),
         email,
         password,
         name
       );
       if (userAccount) {
-        return this.login({ email, password });
-      } else {
+        await this.login({ email, password });
         return userAccount;
+      } else {
+        throw new Error("Account creation failed");
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error creating account:", error.message);
+      throw error;
     }
   }
 
-  async login(email, password) {
+  async login({ email, password }) {
     try {
-      return await this.account.createEmailPasswordSession(email, password);
+      const session = await this.account.createEmailPasswordSession(
+        email,
+        password
+      );
+      if (session) {
+        return session;
+      } else {
+        throw new Error("Login failed");
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Error logging in:", error.message);
+      throw error;
     }
   }
 
   async getCurrentUser() {
     try {
-      return await this.account.getCurrentUser;
+      const user = await this.account.get();
+      return user || null;
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching current user:", error.message);
     }
-
     return null;
   }
 
   async logout() {
     try {
-      return await this.account.deleteSessions();
+      await this.account.deleteSessions();
+      return true;
     } catch (error) {
-      console.log(error);
+      console.error("Error logging out:", error.message);
+      throw error;
     }
   }
 }
 
-const authservice = new AuthService();
-export default authservice;
+const authService = new AuthService();
+export default authService;

@@ -1,29 +1,28 @@
 import React, { useState } from "react";
-import authservice from "../appwrite/auth";
+import authService from "../appwrite/auth";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../store/authSlice";
-import { Button, Input } from "./index";
+import { login } from "../store/authSlice.js";
+import Button from "./Button.jsx";
+import Input from "./Input.jsx";
+import Logo from "./Logo.jsx";
 import { useDispatch } from "react-redux";
-const SignUp = () => {
+import { useForm } from "react-hook-form";
+export const Signup = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState("");
   const dispatch = useDispatch();
-  const [register, handleSubmit] = useState();
-
+  const [error, setError] = useState(null);
+  const { register, handleSubmit } = useForm();
   const create = async (data) => {
     setError("");
     try {
-      const userData = await authservice.createAccount(data);
-      if (userData) {
-        const userData = await authservice.getCurrentUser();
-        if (userData) {
-          dispatch(login({ userData }));
-          navigate("/");
-        }
+      const userCreated = await authService.createAccount(data);
+      if (userCreated) {
+        const userData = await authService.getCurrentUser();
+        if (userData) dispatch(login({ userData }));
         navigate("/");
       }
     } catch (error) {
-      setError(error.message);
+      setError(error);
     }
   };
   return (
@@ -31,11 +30,11 @@ const SignUp = () => {
       <div
         className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}
       >
-        {/* <div className="mb-2 flex justify-center">
+        <div className="mb-2 flex justify-center">
           <span className="inline-block w-full max-w-[100px]">
             <Logo width="100%" />
           </span>
-        </div> */}
+        </div>
         <h2 className="text-center text-2xl font-bold leading-tight">
           Sign up to create account
         </h2>
@@ -48,13 +47,16 @@ const SignUp = () => {
             Sign In
           </Link>
         </p>
-        {error && <p className="text-red-500 mt-8 text-center">{error}</p>}
+        {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
+
         <form onSubmit={handleSubmit(create)}>
           <div className="space-y-5">
             <Input
-              label="Name: "
+              label="Full Name: "
               placeholder="Enter your full name"
-              {...register("name", { required: true })}
+              {...register("name", {
+                required: true,
+              })}
             />
             <Input
               label="Email: "
@@ -63,21 +65,21 @@ const SignUp = () => {
               {...register("email", {
                 required: true,
                 validate: {
-                  matchPattern: (value) =>
-                    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
-                    "Invalid email address",
+                  matchPatern: (value) =>
+                    /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
+                    "Email address must be a valid address",
                 },
               })}
             />
-
             <Input
-              label="password"
+              label="Password: "
               type="password"
               placeholder="Enter your password"
-              {...register("password", { required: true })}
+              {...register("password", {
+                required: true,
+              })}
             />
-
-            <Button className="w-full" type="submit">
+            <Button type="submit" className="w-full">
               Create Account
             </Button>
           </div>
@@ -86,5 +88,3 @@ const SignUp = () => {
     </div>
   );
 };
-
-export default SignUp;

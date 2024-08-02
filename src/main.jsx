@@ -4,14 +4,15 @@ import App from "./App.jsx";
 import "./index.css";
 import { Provider } from "react-redux";
 import store from "./store/store.js";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Home from "./pages/Home.jsx";
-import { Protected, Login } from "./components/index.js";
-import Signup from "./pages/Signup.jsx";
-import AllPost from "./pages/AllPosts.jsx";
-import AddPost from "./pages/AddPost.jsx";
-import EditPost from "./pages/EditPost.jsx";
-import Post from "./pages/Post.jsx";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from "./components/pages/Home.jsx";
+import Login from "./components/pages/Login.jsx";
+import Protected from "./components/AuthLayout.jsx";
+import Signup from "./components/pages/Signup.jsx";
+import AllPost from "./components/pages/AllPost.jsx";
+import AddPost from "./components/pages/AddPost.jsx";
+import EditPost from "./components/pages/EditPost.jsx";
+import Post from "./components/pages/Post.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
         path: "/login",
         element: (
           <Protected authentication={false}>
-            <Login />
+            <Login />,
           </Protected>
         ),
       },
@@ -33,7 +34,7 @@ const router = createBrowserRouter([
         path: "/signup",
         element: (
           <Protected authentication={false}>
-            <Signup />
+            <Signup />,
           </Protected>
         ),
       },
@@ -41,7 +42,7 @@ const router = createBrowserRouter([
         path: "/all-posts",
         element: (
           <Protected authentication>
-            <AllPost />
+            <AllPost />,
           </Protected>
         ),
       },
@@ -49,7 +50,7 @@ const router = createBrowserRouter([
         path: "/add-post",
         element: (
           <Protected authentication>
-            <AddPost />
+            <AddPost />,
           </Protected>
         ),
       },
@@ -57,7 +58,7 @@ const router = createBrowserRouter([
         path: "/edit-post/:slug",
         element: (
           <Protected authentication>
-            <EditPost />
+            <EditPost />,
           </Protected>
         ),
       },
@@ -68,6 +69,7 @@ const router = createBrowserRouter([
     ],
   },
 ]);
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <RouterProvider router={router} />

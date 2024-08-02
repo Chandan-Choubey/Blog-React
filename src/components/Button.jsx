@@ -3,16 +3,16 @@ import React from "react";
 const Button = ({
   children,
   type = "button",
-  bgcolor = "bg-blue-600",
-  textcolor = "text-white",
+  bgColor = "bg-blue-600",
+  textColor = "text-white",
   className = "",
   ...props
 }) => {
   return (
     <button
-      className={`px-2 py-2 rounded-lg ${className} ${bgcolor} ${textcolor} `}
+      className={`px-2 py-2 rounded-lg ${className} ${bgColor} ${textColor}`}
+      type={type}
       {...props}
-      type={`${type}`}
     >
       {children}
     </button>
